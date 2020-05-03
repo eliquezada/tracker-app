@@ -1923,8 +1923,59 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
-  mounted: function mounted() {}
+  data: function data() {
+    return {
+      tasks: '',
+      newTaskName: ''
+    };
+  },
+  methods: {
+    createTask: function createTask() {
+      var _this = this;
+
+      window.axios.post('/tasks/store', {
+        name: this.newTaskName
+      }).then(function (response) {
+        return _this.tasks.push(response.data);
+      })["catch"](function (error) {
+        console.log(error.message);
+      });
+      this.newTaskName = '';
+    }
+  },
+  created: function created() {
+    var _this2 = this;
+
+    window.axios.get('/tasks').then(function (response) {
+      _this2.tasks = response.data;
+    });
+  }
 });
 
 /***/ }),
@@ -37573,25 +37624,119 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
+  return _c("div", { staticClass: "container" }, [
+    _c("div", { staticClass: "row justify-content-center" }, [
+      _c("div", { staticClass: "col-md-12" }, [
+        _vm.tasks
+          ? _c("div", { staticClass: "no-tasks" }, [_vm._m(0)])
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.tasks.length > 0
+          ? _c("div")
+          : _c("div", { staticClass: "mt-5" }, [
+              _c("div", [_vm._v("Start to track a task")])
+            ]),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            staticClass: "modal fade",
+            attrs: { id: "taskCreate", role: "dialog" }
+          },
+          [
+            _c("div", { staticClass: "modal-dialog modal-sm" }, [
+              _c("div", { staticClass: "modal-content" }, [
+                _vm._m(1),
+                _vm._v(" "),
+                _c("div", { staticClass: "modal-body" }, [
+                  _c("div", { staticClass: "form-group" }, [
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.newTaskName,
+                          expression: "newTaskName"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: {
+                        type: "text",
+                        id: "usrname",
+                        placeholder: "Task name"
+                      },
+                      domProps: { value: _vm.newTaskName },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.newTaskName = $event.target.value
+                        }
+                      }
+                    })
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "modal-footer" }, [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-default btn-primary",
+                      attrs: {
+                        "data-dismiss": "modal",
+                        disabled: _vm.newTaskName === "",
+                        type: "submit"
+                      },
+                      on: { click: _vm.createTask }
+                    },
+                    [
+                      _c("i", { staticClass: "glyphicon glyphicon-play" }),
+                      _vm._v(" Start")
+                    ]
+                  )
+                ])
+              ])
+            ])
+          ]
+        )
+      ])
+    ])
+  ])
 }
 var staticRenderFns = [
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "container" }, [
-      _c("div", { staticClass: "row justify-content-center" }, [
-        _c("div", { staticClass: "col-md-12" }, [
-          _c("div", { staticClass: "card" }, [
-            _c("div", { staticClass: "card-header" }, [_vm._v("Dashboard")]),
-            _vm._v(" "),
-            _c("div", { staticClass: "card-body" }, [
-              _vm._v("\n                    Dashboard\n                ")
-            ])
-          ])
-        ])
-      ])
+    return _c("div", { staticClass: "col-sm-12" }, [
+      _c("h2", { staticClass: "pull-left project-title" }, [_vm._v("Tasks")]),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-primary btn-sm pull-right",
+          attrs: { "data-toggle": "modal", "data-target": "#taskCreate" }
+        },
+        [_vm._v("Track Task")]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-header" }, [
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: { type: "button", "data-dismiss": "modal" }
+        },
+        [_vm._v("×")]
+      ),
+      _vm._v(" "),
+      _c("h4", { staticClass: "modal-title" }, [_vm._v("Record Task")])
     ])
   }
 ]
