@@ -93,7 +93,7 @@
                 return {
                     hours: this.appendLeftNumber(hours),
                     minutes: this.appendLeftNumber(mins),
-                    seconds: this.appendLeftNumber(seconds),
+                    seconds: this.appendLeftNumber(secs),
                 }
             },
 
@@ -166,7 +166,8 @@
              */
             createTask: function () {
                 window.axios.post('/tasks/store', {name: this.newTaskName})
-                    .then(response => { this.tasks.push(response.data)
+                    .then(response => {
+                        this.tasks.unshift(response.data)
                         this.startTimer(response.data);
                     })
                     .catch(function (error) {
