@@ -5,27 +5,37 @@ namespace App\Http\Controllers;
 use App\Models\Task;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use App\Repositories\TaskRepository;
 
 class TaskController extends Controller
 {
-    public function __construct()
+
+    protected $tasks;
+
+    public function __construct(TaskRepository $tasks)
     {
         $this->middleware('auth');
+        $this->tasks = $tasks;
     }
 
     public function index()
     {
-        return Task::mine()->get()->toArray();
+        return $this->tasks->getAll();
     }
 
     public function store(Request $request)
     {
-        $data = $request->validate(['name' => 'required|between:3,25']);
+        return $this->tasks->create($request);
 
-        $data = array_merge($data, ['user_id' => auth()->user()->id,'started_at' => new Carbon]);
+    }
 
-        $task = Task::create($data);
+    public function active()
+    {
+        return $this->tasks->running() ?? [];
+    }
 
-        return  $task->toArray();
+    public function stopRunning($id)
+    {
+        return $this->tasks->update($id);
     }
 }
