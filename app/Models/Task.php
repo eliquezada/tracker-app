@@ -7,10 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 class Task extends Model
 {
     protected $fillable = [
-        'name', 'user_id', 'stopped_at', 'started_at'
+        'name', 'user_id','started_at', 'stopped_at', 'created_at'
     ];
 
-    protected $dates = ['started_at', 'stopped_at'];
+    public $timestamps = false;
 
      /**
      * access to user
