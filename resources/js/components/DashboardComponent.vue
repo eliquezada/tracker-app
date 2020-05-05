@@ -2,12 +2,12 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-12">
-                <div class="no-tasks" v-if="tasks">
+                <div class="no-tasks" v-if="tasks_date">
                     <div class="col-sm-12" id="button-track">
                         <button class="btn btn-primary btn-sm pull-right" data-toggle="modal" data-target="#taskCreate"  @click="selectedTask = tasks">Track Task</button>
                     </div>
                 </div>
-                <div v-for="task in tasks" :key="task.id"></div>
+                <div v-for="(tasks, index) in tasks_date" :key="index">
                 <div v-if="tasks.length > 0" class="mt-3">
                     <div class="panel panel-default">
                         <div class="panel-heading clearfix">
@@ -37,7 +37,7 @@
                 </div>
                 <div v-else class="mt-5">
                     <div>Start to track a task</div>
-                </div>
+                </div></div>
                 <div class="modal fade" id="taskCreate" role="dialog" >
                     <div class="modal-dialog modal-sm">
                         <div class="modal-content">
@@ -71,6 +71,7 @@
     export default {
         data() {
             return {
+                tasks_date: '',
                 tasks: '',
                 newTaskName: '',
                 startMessage: 'Starting...',
@@ -147,11 +148,14 @@
             stopTimer: function () {
                 window.axios.post(`/tasks/${this.counter.timer.id}/stop`)
                     .then(response => {
-                            this.tasks.forEach(task => {
+                        //loop with 'for in' as index is string date
+                        for (let index in this.tasks_date) {
+                            this.tasks_date[index].forEach(task => {
                                 if (task.id === parseInt(this.counter.timer.id)) {
                                     return task.stopped_at = response.data.stopped_at
                                 }
                             })
+                        }
                         //Reset counter and stop ticker
                         clearInterval(this.counter.ticker)
                         this.counter = { seconds: 0, timer: null }
@@ -167,7 +171,9 @@
             createTask: function () {
                 window.axios.post('/tasks/store', {name: this.newTaskName})
                     .then(response => {
-                        this.tasks.unshift(response.data)
+                        for (let index in this.tasks_date) {
+                            this.tasks_date[index].unshift(response.data)
+                        }
                         this.startTimer(response.data);
                     })
                     .catch(function (error) {
@@ -182,10 +188,10 @@
         created() {
             window.axios.get('/tasks')
                 .then(response => {
-                this.tasks = response.data
+                this.tasks_date = response.data
+                   // console.log( this.tasks_date);
                 window.axios.get('/task/active').then(response => {
                     if (response.data.id !== undefined) {
-                        //console.log(response.data);
                         this.startTimer(response.data)
                     }
                 })

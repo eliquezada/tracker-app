@@ -20,7 +20,12 @@ class TaskController extends Controller
 
     public function index()
     {
-        return $this->tasks->getAll();
+        $data =  $this->tasks->getAll();
+        $tasks = array();
+        foreach ($data as $element) {
+            $tasks[$element['created_at']][] = $element;
+        }
+        return $tasks;
     }
 
     public function store(Request $request)

@@ -31,7 +31,7 @@ class TaskRepository
     {
         $data = $request->validate(['name' => 'required|between:3,25']);
 
-        $data = array_merge($data, ['user_id' => auth()->user()->id,'started_at' => new Carbon]);
+        $data = array_merge($data, ['user_id' => auth()->user()->id,'started_at' => new Carbon,'created_at' => new Carbon]);
 
         $task = Task::create($data);
 
