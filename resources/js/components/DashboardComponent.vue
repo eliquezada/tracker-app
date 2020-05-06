@@ -2,42 +2,41 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-12">
-                <div class="no-tasks" v-if="tasks_date">
+                <div v-if="active_task" class="no-tasks">
                     <div class="col-sm-12" id="button-track">
                         <button class="btn btn-primary btn-sm pull-right" data-toggle="modal" data-target="#taskCreate"  @click="selectedTask = tasks">Track Task</button>
                     </div>
                 </div>
                 <div v-for="(tasks, index) in tasks_date" :key="index">
-                <div v-if="tasks.length > 0" class="mt-3">
-                    <div class="panel panel-default">
-                        <div class="panel-heading clearfix">
-                            <h4 class="pull-left">Day and time</h4>
+                    <div v-if="tasks.length > 0" class="mt-3">
+                        <div class="panel panel-default">
+                            <div class="panel-heading clearfix">
+                                <h4 class="pull-left">{{ formatDay(index) }}</h4>
+                            </div>
+                            <div class="panel-body">
+                                <ul class="list-group">
+                                    <li v-for="task in tasks" :key="task.id" class="list-group-item clearfix">
+                                        <strong class="timer-name">{{ task.name }} </strong>
+                                        <div class="pull-right">
+                                        <span v-if="showTimerActiveTask(task)" style="margin-right: 10px">
+                                            <strong>{{ startMessage }}</strong>
+                                        </span>
+                                            <span v-else style="margin-right: 10px">
+                                            <strong>{{ calculateTaskTotalTime(task) }}</strong>
+                                        </span>
+                                        <button  v-if="showTimerActiveTask(task)" class="btn btn-sm btn-danger" @click="stopTimer()">
+                                            <i class="glyphicon glyphicon-stop">Stop</i>
+                                        </button>
+                                        </div>
+                                    </li>
+                                </ul>
+                             </div>
                         </div>
-                        <div class="panel-body">
-                            <ul class="list-group">
-                                <li v-for="task in tasks" :key="task.id" class="list-group-item clearfix">
-                                    <strong class="timer-name">{{ task.name }} </strong>
-                                    <div class="pull-right">
-                                    <span v-if="showTimerActiveTask(task)" style="margin-right: 10px">
-                                        <strong>{{ startMessage }}</strong>
-                                    </span>
-                                        <span v-else style="margin-right: 10px">
-                                        <strong>{{ calculateTaskTotalTime(task) }}</strong>
-                                    </span>
-
-                                    <button  v-if="showTimerActiveTask(task)" class="btn btn-sm btn-danger" @click="stopTimer()">
-                                        <i class="glyphicon glyphicon-stop">Stop</i>
-                                    </button>
-
-                                    </div>
-                                </li>
-                            </ul>
-                         </div>
+                    </div>
+                    <div v-else class="mt-5">
+                        <div>Start to track a task</div>
                     </div>
                 </div>
-                <div v-else class="mt-5">
-                    <div>Start to track a task</div>
-                </div></div>
                 <div class="modal fade" id="taskCreate" role="dialog" >
                     <div class="modal-dialog modal-sm">
                         <div class="modal-content">
@@ -54,7 +53,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button v-bind:disabled="newTaskName === ''" @click="createTask(selectedTask)" type="submit" class="btn btn-default btn-primary"><i class="glyphicon glyphicon-play"></i> Start</button>
+                                <button v-bind:disabled="newTaskName === ''" @click="createTask(selectedTask), hideModal()" type="submit" class="btn btn-default btn-primary"><i class="glyphicon glyphicon-play"></i> Start</button>
                              </div>
                          </div>
                      </div>
@@ -66,8 +65,6 @@
 
 <script>
     import moment from 'moment'
-    import _ from 'lodash'
-
     export default {
         data() {
             return {
@@ -77,13 +74,26 @@
                 startMessage: 'Starting...',
                 counter: { seconds: 0, timer: null },
             }
-
+        },
+        computed: {
+            active_task: function () {
+                if (this.counter.timer !== null) {
+                    return false
+                } else {
+                    return true;
+                }
+            }
         },
         methods: {
+            hideModal () {
+                $('#taskCreate').modal('hide');
+            },
+
             /**
              * Conditionally pads a number with "0"
              */
             appendLeftNumber: number =>  (number > 9 || number === 0) ? number : "0" + number,
+
             /**
              * Splits seconds into hours, minutes, and seconds.
              */
@@ -97,18 +107,20 @@
                     seconds: this.appendLeftNumber(secs),
                 }
             },
-
-            filterByDay: function () {
-                return this.message.split('').reverse().join('')
+            /**
+             * Format index as date
+             */
+            formatDay: function (date) {
+                return moment(date).format("dddd, MMMM DD YYYY");
             },
             /**
              * Time spent on the task using the timer object.
              */
-            calculateTaskTotalTime: function(timer) {
-                if (timer.stopped_at) {
-                    const started = moment(timer.created_at)
-                    const stopped = moment(timer.stopped_at)
-                    const time = this.timeFromSeconds(
+            calculateTaskTotalTime: function(task) {
+                if (task.stopped_at) {
+                    let started = moment(task.started_at)
+                    let stopped = moment(task.stopped_at)
+                    let time = this.timeFromSeconds(
                         parseInt(moment.duration(stopped.diff(started)).asSeconds())
                     )
                     return `${time.hours} hrs | ${time.minutes} mins | ${time.seconds} secs`
@@ -160,6 +172,8 @@
                         clearInterval(this.counter.ticker)
                         this.counter = { seconds: 0, timer: null }
                         this.startMessage = 'Starting...'
+                        this.active_task = false;
+
                     })
                     .catch(function (error) {
                         console.log(error.message);
@@ -189,7 +203,6 @@
             window.axios.get('/tasks')
                 .then(response => {
                 this.tasks_date = response.data
-                   // console.log( this.tasks_date);
                 window.axios.get('/task/active').then(response => {
                     if (response.data.id !== undefined) {
                         this.startTimer(response.data)

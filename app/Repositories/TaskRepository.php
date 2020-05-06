@@ -17,7 +17,12 @@ class TaskRepository
      */
     public function getAll()
     {
-        return Task::mine()->idDescending()->get()->toArray();
+        $data = Task::mine()->idDescending()->get()->toArray();
+        $tasks = array();
+        foreach ($data as $element) {
+            $tasks[$element['created_at']][] = $element;
+        }
+        return $tasks;
     }
 
     /**

@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Task;
 use Illuminate\Http\Request;
-use Carbon\Carbon;
 use App\Repositories\TaskRepository;
 
 class TaskController extends Controller
@@ -20,12 +18,7 @@ class TaskController extends Controller
 
     public function index()
     {
-        $data =  $this->tasks->getAll();
-        $tasks = array();
-        foreach ($data as $element) {
-            $tasks[$element['created_at']][] = $element;
-        }
-        return $tasks;
+        return $this->tasks->getAll();
     }
 
     public function store(Request $request)
