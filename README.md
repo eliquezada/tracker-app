@@ -1,7 +1,21 @@
 # tacker-app
-Time tacker task
+Time tacker task can be run with Docker or Manually
 
-# setup environment
+# setup environment with Docker
+1. Install docker https://docs.docker.com/
+
+2. Clone repo and inside repo run
+    <pre>
+    docker-compose build app
+    docker-compose up -d
+    docker-compose exec app composer install
+    docker-compose exec app php artisan key:generate
+    docker-compose exec app php artisan migrate:fresh
+    </pre>
+    
+3. Site is ready at http://127.0.0.1:8000
+
+# setup environment manually
 1. Install composer preferable globally
 https://getcomposer.org/download/
     <pre>
