@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Repositories\TaskRepository;
+use App\Services\TaskCreate;
+use App\Services\TaskList;
+use App\Services\TaskStop;
 
 class TaskController extends Controller
 {
-
     protected $tasks;
 
     public function __construct(TaskRepository $tasks)
@@ -16,15 +18,14 @@ class TaskController extends Controller
         $this->tasks = $tasks;
     }
 
-    public function index()
+    public function index(TaskList $taskList)
     {
-        return $this->tasks->getAll();
+        return $taskList->__invoke();
     }
 
-    public function store(Request $request)
+    public function store(TaskCreate $taskCreate, Request $request)
     {
-        return $this->tasks->create($request);
-
+        return $taskCreate->__invoke($request);
     }
 
     public function active()
@@ -32,8 +33,8 @@ class TaskController extends Controller
         return $this->tasks->running() ?? [];
     }
 
-    public function stopRunning($id)
+    public function stopRunning(TaskStop $taskStop, $id)
     {
-        return $this->tasks->update($id);
+        return $taskStop->__invoke($id);
     }
 }

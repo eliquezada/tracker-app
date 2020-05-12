@@ -3,7 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Task;
-
+use App\Services\TaskCreate;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -50,7 +50,7 @@ class TaskRepository
      *
      * @return array
      */
-    public function update($id)
+    public function stop($id)
     {
         $task = Task::find($id);
         $task->stopped_at = new Carbon;
