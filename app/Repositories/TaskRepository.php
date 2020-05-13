@@ -19,8 +19,13 @@ class TaskRepository
     {
         $data = Task::mine()->idDescending()->get()->toArray();
         $tasks = array();
-        foreach ($data as $element) {
-            $tasks[$element['created_at']][] = $element;
+        if ($data == null) {
+            $today = Carbon::now();
+            $tasks[$today->format('Y-m-d')][] = '';
+        } else {
+            foreach ($data as $element) {
+                $tasks[$element['created_at']][] = $element;
+            }
         }
         return $tasks;
     }

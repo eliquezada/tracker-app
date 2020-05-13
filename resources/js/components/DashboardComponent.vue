@@ -13,7 +13,7 @@
                             <div class="panel-heading clearfix">
                                 <h4 class="pull-left">{{ formatDay(index) }}</h4>
                             </div>
-                            <div class="panel-body">
+                            <div v-if="tasks != ''" class="panel-body">
                                 <ul class="list-group">
                                     <li v-for="task in tasks" :key="task.id" class="list-group-item clearfix">
                                         <strong class="timer-name">{{ task.name }} </strong>

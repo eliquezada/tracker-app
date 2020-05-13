@@ -55437,85 +55437,92 @@ var render = function() {
                         ])
                       ]),
                       _vm._v(" "),
-                      _c("div", { staticClass: "panel-body" }, [
-                        _c(
-                          "ul",
-                          { staticClass: "list-group" },
-                          _vm._l(tasks, function(task) {
-                            return _c(
-                              "li",
-                              {
-                                key: task.id,
-                                staticClass: "list-group-item clearfix"
-                              },
-                              [
-                                _c("strong", { staticClass: "timer-name" }, [
-                                  _vm._v(_vm._s(task.name) + " ")
-                                ]),
-                                _vm._v(" "),
-                                _c("div", { staticClass: "pull-right" }, [
-                                  _vm.showTimerActiveTask(task)
-                                    ? _c(
-                                        "span",
-                                        {
-                                          staticStyle: {
-                                            "margin-right": "10px"
-                                          }
-                                        },
-                                        [
-                                          _c("strong", [
-                                            _vm._v(_vm._s(_vm.startMessage))
-                                          ])
-                                        ]
-                                      )
-                                    : _c(
-                                        "span",
-                                        {
-                                          staticStyle: {
-                                            "margin-right": "10px"
-                                          }
-                                        },
-                                        [
-                                          _c("strong", [
-                                            _vm._v(
-                                              _vm._s(
-                                                _vm.calculateTaskTotalTime(task)
-                                              )
-                                            )
-                                          ])
-                                        ]
-                                      ),
-                                  _vm._v(" "),
-                                  _vm.showTimerActiveTask(task)
-                                    ? _c(
-                                        "button",
-                                        {
-                                          staticClass: "btn btn-sm btn-danger",
-                                          on: {
-                                            click: function($event) {
-                                              return _vm.stopTimer()
-                                            }
-                                          }
-                                        },
-                                        [
-                                          _c(
-                                            "i",
+                      tasks != ""
+                        ? _c("div", { staticClass: "panel-body" }, [
+                            _c(
+                              "ul",
+                              { staticClass: "list-group" },
+                              _vm._l(tasks, function(task) {
+                                return _c(
+                                  "li",
+                                  {
+                                    key: task.id,
+                                    staticClass: "list-group-item clearfix"
+                                  },
+                                  [
+                                    _c(
+                                      "strong",
+                                      { staticClass: "timer-name" },
+                                      [_vm._v(_vm._s(task.name) + " ")]
+                                    ),
+                                    _vm._v(" "),
+                                    _c("div", { staticClass: "pull-right" }, [
+                                      _vm.showTimerActiveTask(task)
+                                        ? _c(
+                                            "span",
+                                            {
+                                              staticStyle: {
+                                                "margin-right": "10px"
+                                              }
+                                            },
+                                            [
+                                              _c("strong", [
+                                                _vm._v(_vm._s(_vm.startMessage))
+                                              ])
+                                            ]
+                                          )
+                                        : _c(
+                                            "span",
+                                            {
+                                              staticStyle: {
+                                                "margin-right": "10px"
+                                              }
+                                            },
+                                            [
+                                              _c("strong", [
+                                                _vm._v(
+                                                  _vm._s(
+                                                    _vm.calculateTaskTotalTime(
+                                                      task
+                                                    )
+                                                  )
+                                                )
+                                              ])
+                                            ]
+                                          ),
+                                      _vm._v(" "),
+                                      _vm.showTimerActiveTask(task)
+                                        ? _c(
+                                            "button",
                                             {
                                               staticClass:
-                                                "glyphicon glyphicon-stop"
+                                                "btn btn-sm btn-danger",
+                                              on: {
+                                                click: function($event) {
+                                                  return _vm.stopTimer()
+                                                }
+                                              }
                                             },
-                                            [_vm._v("Stop")]
+                                            [
+                                              _c(
+                                                "i",
+                                                {
+                                                  staticClass:
+                                                    "glyphicon glyphicon-stop"
+                                                },
+                                                [_vm._v("Stop")]
+                                              )
+                                            ]
                                           )
-                                        ]
-                                      )
-                                    : _vm._e()
-                                ])
-                              ]
+                                        : _vm._e()
+                                    ])
+                                  ]
+                                )
+                              }),
+                              0
                             )
-                          }),
-                          0
-                        )
-                      ])
+                          ])
+                        : _vm._e()
                     ])
                   ])
                 : _c("div", { staticClass: "mt-5" }, [
